@@ -1,0 +1,9 @@
+name: Developing_Data_Products_Course_Project
+account: nemarona
+server: shinyapps.io
+bundleId: 338932
+url:
+        https://nemarona.shinyapps.io/Developing_Data_Products_Course_Project
+when: 1451148291.14373
+asMultiple: FALSE
+asStatic: FALSE

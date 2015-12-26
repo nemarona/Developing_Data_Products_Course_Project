@@ -1,3 +1,6 @@
+# Computes Diabetes Risk Score
+# See http://www.ncbi.nlm.nih.gov/pubmed/12610029
+
 diabetesRisk <- function(sex, age, bmi, waist, bpm, hbg, pa, vfb) {
     # Coefficients
     beta <- c(0.650, 0.940, 0.015, 0.938, 1.021, 1.424, 0.714, 2.263, 0.268, 0.165)
@@ -41,6 +44,35 @@ shinyServer(
                                       input$bpm, input$hbg, input$pa, input$vfb)})
         output$bmi <- renderPrint({bmi()})
         output$score <- renderPrint({drs()[1]})
-        output$probability <- renderPrint({drs()[2]})
+        output$probability <- renderPrint({sprintf("%.1f %%", 100*drs()[2])})
     }
 )
+
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###

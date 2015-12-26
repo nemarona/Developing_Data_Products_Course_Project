@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The Diabetes Risk Score</title>
+  <meta charset="utf-8">
+  <meta name="description" content="The Diabetes Risk Score">
+  <meta name="author" content="by Eduardo Rodríguez">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/slides" 
+    src="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>The Diabetes Risk Score</h1>
+    <h2>A shiny app that computes your risk of developing diabetes</h2>
+    <p>by Eduardo Rodríguez<br/>Course Project for the Developing Data Products class at Coursera</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>The Diabetes Risk Score</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Introduced by Jaana Lindström and Jaakko Tuomilehto
+(paper available <a href="http://www.ncbi.nlm.nih.gov/pubmed/12610029">here</a>).</li>
+<li>Attempts to identify individuals at a high risk of developing the disease
+without laboratory tests.</li>
+<li>Based on age, body mass index, waist circumference, history of
+antihypertensive drug treatment and high blood glucose, physical activity,
+and daily consumption of fruits, berries, or vegetables.</li>
+<li>Score goes from 0 (lowest risk) to 20 (highest risk).</li>
+<li>It also computes an associated probability of developing diabetes within ten years.</li>
+<li>There are some caveats; e.g., family history of diabetes is not taken
+into account (see paper!).</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>The Shiny App</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Shiny app hosted on the Shiny Apps server 
+(<a href="https://nemarona.shinyapps.io/Developing_Data_Products_Course_Project">click here</a>).</p>
+
+<p><img class="center" src="shinyapp-screenshot.png" height=500></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Usage</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Users supply their data via the input widgets on the left panel.
+Height and weight are used to compute the body mass index (BMI).
+Here&#39;s an example calculation:</p>
+
+<pre><code class="r">sex &lt;- &quot;M&quot;
+age &lt;- 38
+height &lt;- 172   # in centimeters
+weight &lt;- 78    # in kilograms
+bmi &lt;- bmiCalc(height, weight)
+waist &lt;- 90     # in centimeters
+bpm &lt;- FALSE    # Blood pressure medication?
+hbg &lt;- FALSE    # High blood glucose?
+pa &lt;- FALSE     # Physical activity at least 4 hours per week?
+vfb &lt;- TRUE     # Daily consumption of vegetables, fruits, or berries?
+diabetesRisk(sex, age, bmi, waist, bpm, hbg, pa, vfb)
+</code></pre>
+
+<pre><code>## [1] 2.000000000 0.004541256
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Inner workings</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Each variable contributes to the score according to the specifications
+given by Lindström and Tuomilehto in their paper.</li>
+<li>The <code>diabetesRisk()</code> function returns the score and an associated probability,
+computed with the formula
+\[p = \frac{1}{1 + e^{-t}},\]
+where \(t = \beta_{0} + \beta_{1} x_{1} + \beta_{2} x_{2} + \cdots\).</li>
+<li>The \(\beta\)-coefficients come from a logistic regression model.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='The Diabetes Risk Score'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='The Shiny App'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Usage'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Inner workings'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

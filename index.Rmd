@@ -1,0 +1,107 @@
+---
+title       : The Diabetes Risk Score
+subtitle    : A shiny app that computes your risk of developing diabetes
+author      : by Eduardo Rodríguez
+job         : Course Project for the Developing Data Products class at Coursera
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax]     # {mathjax, quiz, bootstrap}
+mode        : standalone    # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## The Diabetes Risk Score
+
+- Introduced by Jaana Lindström and Jaakko Tuomilehto
+  (paper available [here](http://www.ncbi.nlm.nih.gov/pubmed/12610029)).
+- Attempts to identify individuals at a high risk of developing the disease
+  without laboratory tests.
+- Based on age, body mass index, waist circumference, history of
+  antihypertensive drug treatment and high blood glucose, physical activity,
+  and daily consumption of fruits, berries, or vegetables.
+- Score goes from 0 (lowest risk) to 20 (highest risk).
+- It also computes an associated probability of developing diabetes within ten years.
+- There are some caveats; e.g., family history of diabetes is not taken
+  into account (see paper!).
+
+---
+
+## The Shiny App
+
+Shiny app hosted on the Shiny Apps server 
+([click here](https://nemarona.shinyapps.io/Developing_Data_Products_Course_Project)).
+
+<img class="center" src="shinyapp-screenshot.png" height=500>
+
+---
+
+## Usage
+
+```{r, echo=FALSE}
+diabetesRisk <- function(sex, age, bmi, waist, bpm, hbg, pa, vfb) {
+    # Coefficients
+    beta <- c(0.650, 0.940, 0.015, 0.938, 1.021, 1.424, 0.714, 2.263, 0.268, 0.165)
+    # Scores
+    s <- c(2, 3, 1, 3, 3, 4, 2, 5, 2, 1)
+    # Initialize all variables to zero
+    x <- numeric(10)
+    # Age (years)
+    if (age >= 45 & age < 55) x[1] <- 1
+    if (age >= 55) x[2] <- 1
+    # BMI (kg/m^2)
+    if (bmi > 25 & bmi <= 30) x[3] <- 1
+    if (bmi > 30) x[4] <- 1
+    # Waist circumference (cm)
+    if (sex == "M" & waist >= 94 & waist < 102) x[5] <- 1
+    if (sex == "M" & waist >= 102) x[6] <- 1
+    if (sex == "F" & waist >= 80 & waist < 88) x[5] <- 1
+    if (sex == "F" & waist >= 88) x[6] <- 1
+    # Use of blood pressure medication
+    if (bpm) x[7] <- 1
+    # History of high blood glucose
+    if (hbg) x[8] <- 1
+    # Physical activity (at least 4 hours/week)
+    if (pa == FALSE) x[9] <- 1
+    # Daily consumption of vegetables, fruits, or berries
+    if (vfb == FALSE) x[10] <- 1
+    score <- drop(x %*% s)
+    t <- -5.658 + drop(x %*% beta)
+    sigma <- 1/(1 + exp(-t))
+    c(as.integer(score), sigma)
+}
+
+bmiCalc <- function(height, weight) {
+    weight/height^2
+}
+```
+
+Users supply their data via the input widgets on the left panel.
+Height and weight are used to compute the body mass index (BMI).
+Here's an example calculation:
+```{r}
+sex <- "M"
+age <- 38
+height <- 172   # in centimeters
+weight <- 78    # in kilograms
+bmi <- bmiCalc(height, weight)
+waist <- 90     # in centimeters
+bpm <- FALSE    # Blood pressure medication?
+hbg <- FALSE    # High blood glucose?
+pa <- FALSE     # Physical activity at least 4 hours per week?
+vfb <- TRUE     # Daily consumption of vegetables, fruits, or berries?
+diabetesRisk(sex, age, bmi, waist, bpm, hbg, pa, vfb)
+```
+
+---
+
+## Inner workings
+
+- Each variable contributes to the score according to the specifications
+  given by Lindström and Tuomilehto in their paper.
+- The `diabetesRisk()` function returns the score and an associated probability,
+  computed with the formula
+  $$p = \frac{1}{1 + e^{-t}},$$
+  where $t = \beta_{0} + \beta_{1} x_{1} + \beta_{2} x_{2} + \cdots$.
+- The $\beta$-coefficients come from a logistic regression model.
+

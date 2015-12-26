@@ -1,13 +1,5 @@
-# http://www.ncbi.nlm.nih.gov/pubmed/12610029
-# http://shiny.rstudio.com/
-
-# shinyUI(fluidPage(
-#     titlePanel("My Shiny App"),
-#     sidebarLayout(
-#         sidebarPanel(),
-#         mainPanel()
-#     )
-# ))
+# User interface for shiny app
+# that computes Diabetes Risk Score
 
 shinyUI(fluidPage(
     titlePanel("The Diabetes Risk Score"),
@@ -47,6 +39,8 @@ shinyUI(fluidPage(
             p("Please note that weight must be given in kilograms, while
               height and waist circumference must be given in centimeters."),
             p("Your body mass index (BMI) is computed from weight and height."),
+            p("Next to your Diabetes Risk Score, we also compute the probability
+              that you will develop the disease within ten years."),
             hr(),
             h4('Body mass index (BMI)'),
             verbatimTextOutput("bmi"),
@@ -71,3 +65,32 @@ shinyUI(fluidPage(
         )
     )
 ))
+
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
